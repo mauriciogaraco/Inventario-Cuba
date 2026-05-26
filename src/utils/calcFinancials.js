@@ -6,15 +6,15 @@ import { LOSS_TYPES } from '../constants/outputTypes'
  * Calculate all key financial metrics.
  *
  * DEFINITIONS (for Cuban wholesale context):
- * - Inventory Value    : current stock × cost price (what's on the shelves)
+ * - Inventory Value    : current stock × cost price (what's on the shelves — NOT period-filtered)
  * - Revenue (Ingresos): sum of sale.total for all Sales records
- * - COGS              : qty × costPrice for each sale line item
+ * - COGS              : qty × costPrice for each sale line item (only what was sold)
  * - Gross Profit      : Revenue − COGS
- * - Net Profit        : Gross Profit − Expenses
+ * - Net Profit        : Gross Profit − Expenses  (true profit accounting for cost of sold goods)
  * - Expenses          : sum of all expense records
  * - Loss Value (Merma): qty × costPrice for damaged/theft/personal/other_loss outputs
- * - Purchase Invest.  : sum of all entry totalCost
- * - Cash Expected     : Revenue − Purchase Investment − Expenses
+ * - Cash From Sales   : Revenue − Expenses  (money collected from customers minus operating costs)
+ * - Total Business    : Cash From Sales + Inventory Value
  */
 export function calcFinancials({ products, entries, outputs, expenses, sales = [], period = 'month' }) {
   const productMap = Object.fromEntries(products.map(p => [p.id, p]))
@@ -56,12 +56,16 @@ export function calcFinancials({ products, entries, outputs, expenses, sales = [
   const totalExpenses  = filteredExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0)
   const netProfit      = grossProfit - totalExpenses
   const purchaseInvest = filteredEntries.reduce((s, e) => s + (Number(e.totalCost) || 0), 0)
-  const cashExpected   = revenue - purchaseInvest - totalExpenses
+  // cashFromSales: what you collected from customers minus operating expenses paid.
+  // Does NOT deduct inventory purchases — that capital is represented by inventoryValue.
+  const cashFromSales  = revenue - totalExpenses
 
   // Current inventory value (always full — not filtered by period)
   const inventoryValue = products.reduce(
     (s, p) => s + (Number(p.stock) || 0) * (Number(p.costPrice) || 0), 0
   )
+  // totalBusiness: liquid cash from sales + capital locked in inventory
+  const totalBusiness  = cashFromSales + inventoryValue
 
   const totalStock = products.reduce((s, p) => s + (Number(p.stock) || 0), 0)
 
@@ -78,7 +82,8 @@ export function calcFinancials({ products, entries, outputs, expenses, sales = [
     totalExpenses,
     lossValue,
     purchaseInvest,
-    cashExpected,
+    cashFromSales,
+    totalBusiness,
     totalStock,
     saleUnits,
     lowStockProducts,

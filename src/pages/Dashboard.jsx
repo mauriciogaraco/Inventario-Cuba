@@ -1,7 +1,7 @@
 // src/pages/Dashboard.jsx
 import { useState, useMemo } from 'react'
 import {
-  TrendingUp, TrendingDown, Package, DollarSign,
+  TrendingUp, TrendingDown, Package, 
   AlertTriangle, ShoppingCart, Wallet, BarChart3, ArrowRight
 } from 'lucide-react'
 // BarChart3 is used for the analytics shortcut button on mobile
@@ -33,7 +33,7 @@ function PeriodTabs({ value, onChange }) {
 }
 
 // ── Metric Card ─────────────────────────────────────────────────────────────
-function MetricCard({ label, value, sub, icon: Icon, color, sparkData, sparkColor, trend }) {
+function MetricCard({ label, value,  icon: Icon, color, sparkData, sparkColor, trend }) {
   const colorMap = {
     blue:   { bg: 'bg-blue-50',   icon: 'text-blue-600',   val: 'text-blue-700'   },
     green:  { bg: 'bg-green-50',  icon: 'text-green-600',  val: 'text-green-700'  },
@@ -130,19 +130,19 @@ export default function Dashboard() {
           {/* ── 6 Key Metrics ── */}
           <div className="grid grid-cols-2 gap-3 stagger-children">
             <MetricCard
-              label="Valor del inventario"
+              label="Efectivo de ventas"
+              value={formatCUPShort(financials.cashFromSales)}
+              icon={Wallet}
+              color={financials.cashFromSales >= 0 ? 'green' : 'red'}
+            />
+            <MetricCard
+              label="Dinero en inventario"
               value={formatCUPShort(financials.inventoryValue)}
               icon={Package}
               color="blue"
             />
             <MetricCard
-              label="Dinero esperado"
-              value={formatCUPShort(financials.cashExpected)}
-              icon={Wallet}
-              color={financials.cashExpected >= 0 ? 'green' : 'red'}
-            />
-            <MetricCard
-              label="Ganancia estimada"
+              label="Ganancia neta"
               value={formatCUPShort(financials.netProfit)}
               icon={TrendingUp}
               color={financials.netProfit >= 0 ? 'green' : 'red'}
@@ -207,8 +207,8 @@ export default function Dashboard() {
             </div>
             <div className="space-y-2">
               {[
-                { label: 'Ingresos totales',    value: financials.revenue,       color: 'text-green-600'  },
-                { label: 'Costo de ventas',     value: financials.cogs,          color: 'text-slate-600'  },
+                { label: 'Ingresos de ventas',  value: financials.revenue,       color: 'text-green-600'  },
+                { label: 'Costo de lo vendido', value: financials.cogs,          color: 'text-slate-600'  },
                 { label: 'Ganancia bruta',      value: financials.grossProfit,   color: 'text-blue-600'   },
                 { label: 'Gastos operacionales',value: financials.totalExpenses, color: 'text-amber-600'  },
                 { label: 'Ganancia neta',       value: financials.netProfit,     color: financials.netProfit >= 0 ? 'text-green-700 font-semibold' : 'text-red-600 font-semibold' },
@@ -218,6 +218,26 @@ export default function Dashboard() {
                   <span className={row.color}>{formatCUP(row.value)}</span>
                 </div>
               ))}
+            </div>
+
+            {/* Totales del negocio */}
+            <div className="mt-3 pt-3 border-t border-slate-100 space-y-2">
+              <div className="flex justify-between items-center text-sm py-1">
+                <span className="text-slate-500">Efectivo de ventas</span>
+                <span className={`font-medium ${financials.cashFromSales >= 0 ? 'text-green-700' : 'text-red-600'}`}>
+                  {formatCUP(financials.cashFromSales)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm py-1">
+                <span className="text-slate-500">Dinero en inventario</span>
+                <span className="font-medium text-blue-700">{formatCUP(financials.inventoryValue)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm py-1 bg-slate-50 rounded-xl px-2">
+                <span className="font-semibold text-slate-700">Total del negocio</span>
+                <span className={`font-bold ${financials.totalBusiness >= 0 ? 'text-slate-800' : 'text-red-600'}`}>
+                  {formatCUP(financials.totalBusiness)}
+                </span>
+              </div>
             </div>
           </div>
 
