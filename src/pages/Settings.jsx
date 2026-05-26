@@ -188,7 +188,7 @@ export default function Settings() {
               </div>
               <div>
                 <p className="text-sm font-bold text-slate-900">Inventario Cuba</p>
-                <p className="text-xs text-slate-500">Versión 1.0.2</p>
+                <p className="text-xs text-slate-500">Versión 1.0.0</p>
                 <p className="text-xs text-slate-400 mt-1">Desarrollado por <span className="font-semibold text-primary-600">Mauricio</span></p>
               </div>
             </div>
