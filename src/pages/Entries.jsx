@@ -94,7 +94,7 @@ export default function Entries({ embedded = false }) {
         name: form.productName.trim(),
         category: form.category,
 
-        stock: Number(form.quantity),
+        stock: 0,
         minStock: Number(form.minStock),
 
         costPrice:
