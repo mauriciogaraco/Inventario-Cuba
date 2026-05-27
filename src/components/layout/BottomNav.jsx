@@ -2,12 +2,12 @@
 // Gastos replaces Análisis in the bottom nav for daily-use accessibility.
 // Analytics is still accessible from the sidebar (desktop) and Dashboard link.
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Package,ShoppingCart, DollarSign } from 'lucide-react'
+import { LayoutDashboard, Package,ShoppingCart, PackageMinus, DollarSign } from 'lucide-react'
 
 const NAV_ITEMS = [
   { to: '/',           icon: LayoutDashboard, label: 'Inicio'     },
   { to: '/inventario', icon: Package,         label: 'Inventario' },
-  
+   { to: '/salidas',    icon: PackageMinus,    label: 'Salidas' },
   { to: '/ventas',     icon: ShoppingCart,    label: 'Ventas'     },
   { to: '/gastos',     icon: DollarSign,      label: 'Gastos'     },
 ]
