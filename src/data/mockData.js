@@ -27,6 +27,6 @@ export const MOCK_EXPENSES = [
 export const MOCK_SETTINGS = {
   businessName: 'Inventario-APP',
   pin: null,
-  ownerName: 'Dairon',
+  ownerName: '',
   seeded: true,
 }
